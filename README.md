@@ -81,12 +81,9 @@ docker-compose run restful-booker pytest --env=stage
 ```bash
 allure serve allure-results
 ```
-# 📊 Скриншоты Allure‑отчёта
-Пример внешнего вида отчёта:
+# 📊 Пример Allure‑отчёта
 
-https://screenshots/allure-overview.png
-
-https://screenshots/allure-test-cases.png
+![img.png](img.png)
 
 
 # CI/CD
