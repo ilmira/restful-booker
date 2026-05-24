@@ -83,7 +83,7 @@ allure serve allure-results
 ```
 # 📊 Пример Allure‑отчёта
 
-![img.png](img.png)
+![img.png](allure_example.png)
 
 
 # CI/CD
