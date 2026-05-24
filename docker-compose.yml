@@ -1,0 +1,6 @@
+services:
+  restful-booker:
+    build: .
+    command: pytest -v --alluredir=/app/allure-results
+    volumes:
+      - ./allure-results:/app/allure-results

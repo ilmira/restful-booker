@@ -1,0 +1,67 @@
+name: Python autotests
+
+on:
+  push
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    name: Run autotests
+    steps:
+      - name: Checkout autotests
+        uses: actions/checkout@v6
+
+      - name: Run tests (only tests container)
+        run: docker compose run --rm restful-booker
+        continue-on-error: true
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'microsoft'
+          java-version: '25'
+
+      - name: Install Allure
+        run: |
+          wget https://github.com/allure-framework/allure2/releases/download/2.32.0/allure-2.32.0.tgz
+          tar -zxvf allure-2.32.0.tgz
+          sudo ln -sf $(pwd)/allure-2.32.0/bin/allure /usr/bin/allure
+
+      - name: Generate report
+        run: allure generate allure-results -o allure-report --clean
+
+      - name: Save allure report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+          retention-days: 7
+
+  prepare-pages:
+    needs: run-tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download allure report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: allure-report
+          path: allure-report
+
+      - name: Upload to GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
+
+  deploy-to-pages:
+    needs: prepare-pages
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
