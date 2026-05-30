@@ -1,6 +1,6 @@
 import pytest
 
-from config.environments import Environment, environments, EnvironmentConfig
+from config.environments import Environment, load_config, EnvironmentConfig
 from services.restful_booker.auth.create_token import CreateToken
 from services.restful_booker.booking.create_booking import CreateBooking
 from services.restful_booker.booking.data import BodyBooking
@@ -11,7 +11,7 @@ def pytest_addoption(parser):
     parser.addoption(
         "--env",
         action="store",
-        default="stage",
+        default="dev",
         help="Окружение для запуска тестов (dev/stage)"
     )
 
@@ -25,7 +25,7 @@ def env(request) -> Environment:
     except ValueError:
         raise ValueError(
             f"Некорректное окружение: {env_name}. "
-            f"Используйте одно из: dev/stage/prod"
+            f"Используйте одно из: dev/stage"
         )
 
 
@@ -33,8 +33,8 @@ def env(request) -> Environment:
 def env_config(env) -> EnvironmentConfig:
     """Фикстура для получения конфигурации текущего окружения"""
     print(f"\nОкружение: {env}")
-    print(f"{environments[env]}\n")
-    return environments[env]
+    print(f"{load_config(env)}\n")
+    return load_config(env)
 
 
 @pytest.fixture(scope="session")
@@ -49,7 +49,7 @@ def booking_id(env_config, authorize):
 @pytest.fixture(scope='session')
 def authorize(env_config):
     response = CreateToken(env_config).create_token({
-        'username': 'admin',
-        'password': 'password123'
+        'username': env_config.restful_booker_username,
+        'password': env_config.restful_booker_password
     })
     yield response.json()['token']

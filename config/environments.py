@@ -1,5 +1,7 @@
-from dataclasses import dataclass
 from enum import Enum
+from pathlib import Path
+
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Environment(str, Enum):
@@ -13,19 +15,21 @@ class Environment(str, Enum):
         }[self]
 
 
-@dataclass
-class EnvironmentConfig:
+class EnvironmentConfig(BaseSettings):
     restful_booker_url: str
+    restful_booker_username: str
+    restful_booker_password: str
 
     def __str__(self):
         return f"- Restful Booker API: {self.restful_booker_url}"
 
-
-environments = {
-    Environment.DEV: EnvironmentConfig(
-        restful_booker_url="https://restful-booker.herokuapp.com"
-    ),
-    Environment.STAGE: EnvironmentConfig(
-        restful_booker_url="https://restful-booker.herokuapp.com"
+    model_config = SettingsConfigDict(
+        env_file_encoding="utf-8",
+        extra="ignore",
+        case_sensitive=False,
     )
-}
+
+
+def load_config(env: Environment = Environment.DEV) -> EnvironmentConfig:
+    env_file = Path(__file__).parent.parent / f".env.{env.value}"
+    return EnvironmentConfig(_env_file=str(env_file))

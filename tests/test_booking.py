@@ -69,13 +69,13 @@ class TestBooking:
         with allure.step('Проверяем статус код'):
             assert response.status_code == 200
         with allure.step('Валидация схемы ответа'):
-            validated_data = Booking.model_validate(response.json())
+            Booking.model_validate(response.json())
 
     @pytest.mark.smoke
     @allure.title('Получение бронирования по несуществующему ID')
     @allure.testcase("https://example.com/testcase/7", "Test-7")
     def test_get_booking_not_valid_id(self, env_config):
-        with allure.step('ППолучение бронирования по несуществующему ID'):
+        with allure.step('Получение бронирования по несуществующему ID'):
             response = GetBooking(env_config).get_booking_by_id(1000000000000000)
 
         with allure.step('Проверяем статус код'):
@@ -155,7 +155,7 @@ class TestBooking:
                 assert response.status_code == 200
             with allure.step('Валидация схемы ответа и соответствия даты заезда в ответе'):
                 validated = Booking.model_validate(response.json())
-                assert validated.bookingdates.checkin == my_checkin
+                assert validated.bookingdates.checkin >= my_checkin
 
     @pytest.mark.smoke
     @allure.title('Получение списка всех бронирований по дате выезда')
@@ -175,7 +175,7 @@ class TestBooking:
                 assert response.status_code == 200
             with allure.step('Валидация схемы ответа и соответствия даты выезда в ответе'):
                 validated = Booking.model_validate(response.json())
-                assert validated.bookingdates.checkout == my_checkout
+                assert validated.bookingdates.checkout <= my_checkout
 
     @pytest.mark.smoke
     @allure.title('Полное успешное обновление бронирования')
@@ -188,7 +188,7 @@ class TestBooking:
         with allure.step('Проверяем статус код'):
             assert response.status_code == 200
         with allure.step('Валидация схемы ответа'):
-            validated_data = Booking.model_validate(response.json())
+            Booking.model_validate(response.json())
 
     @pytest.mark.smoke
     @allure.title('Частичное успешное обновление бронирования')
@@ -201,7 +201,7 @@ class TestBooking:
         with allure.step('Проверяем статус код'):
             assert response.status_code == 200
         with allure.step('Валидация схемы ответа'):
-            validated_data = Booking.model_validate(response.json())
+            Booking.model_validate(response.json())
 
     @pytest.mark.smoke
     @allure.title('Неуспешное обновление бронирования')

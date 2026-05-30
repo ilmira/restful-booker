@@ -92,7 +92,7 @@ allure serve allure-results
 
 ### Триггер
 
-Workflow запускается при создании Pull Request в ветку `main`.
+Workflow запускается при каждом `push` в ветку `main`.
 
 ### Что делает pipeline
 
@@ -122,9 +122,9 @@ restful-booker/
 │   ├── base_api.py               # Базовый HTTP-клиент
 │   └── restful_booker/
 │       ├── auth/                 # Аутентификация
-│       │   ├── auth.py
 │       │   ├── create_token.py
 │       │   └── models/           # Pydantic/схемы для auth
+│       │        └── auth.py       
 │       ├── booking/              # Бронирования
 │       │   ├── models/           # Схемы бронирований
 │       │   ├── booking.py
@@ -136,12 +136,12 @@ restful-booker/
 │       └── ping/                 # Health check
 │           └── health_check.py
 ├── tests/
-│   ├── conftest.py               # Фикстуры (клиент, токен)
 │   ├── test_auth.py
 │   ├── test_booking.py
 │   └── test_ping.py
 ├── utils/
 │   └── helper.py                 # Вспомогательные функции
+├── conftest.py               # Фикстуры (клиент, токен)
 ├── .env                          # Переменные окружения (не в git)
 ├── .gitignore
 ├── docker-compose.yml
