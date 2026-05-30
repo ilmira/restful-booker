@@ -10,7 +10,32 @@ jobs:
     steps:
       - name: Checkout autotests
         uses: actions/checkout@v6
+      - name: Determine environment
+        id: env
+        run: |
+         ENV_NAME="${{ github.event.inputs.environment }}"
+         if [ -z "$ENV_NAME" ]; then
+         ENV_NAME="dev"
+         fi
+         echo "ENV_NAME=$ENV_NAME" >> $GITHUB_OUTPUT
 
+      - name: Create .env file from secrets
+        run: |
+         ENV_NAME="${{ steps.env.outputs.ENV_NAME }}"
+         if [ "$ENV_NAME" = "dev" ]; then
+         URL="${{ secrets.DEV_RESTFUL_BOOKER_URL }}"
+         USERNAME="${{ secrets.DEV_RESTFUL_BOOKER_USERNAME }}"
+         PASSWORD="${{ secrets.DEV_RESTFUL_BOOKER_PASSWORD }}"
+         else
+         URL="${{ secrets.STAGE_RESTFUL_BOOKER_URL }}"
+         USERNAME="${{ secrets.STAGE_RESTFUL_BOOKER_USERNAME }}"
+         PASSWORD="${{ secrets.STAGE_RESTFUL_BOOKER_PASSWORD }}"
+         fi
+         cat << EOF > ".env.$ENV_NAME"
+         RESTFUL_BOOKER_URL=$URL
+         RESTFUL_BOOKER_USERNAME=$USERNAME
+         RESTFUL_BOOKER_PASSWORD=$PASSWORD
+         EOF
       - name: Run tests (only tests container)
         run: docker compose run --rm restful-booker
         continue-on-error: true
