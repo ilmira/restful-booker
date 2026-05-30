@@ -23,9 +23,9 @@ jobs:
         run: |
          ENV_NAME="${{ steps.env.outputs.ENV_NAME }}"
          if [ "$ENV_NAME" = "dev" ]; then
-         URL="${{ secrets.DEV_RESTFUL_BOOKER_URL }}"
-         USERNAME="${{ secrets.DEV_RESTFUL_BOOKER_USERNAME }}"
-         PASSWORD="${{ secrets.DEV_RESTFUL_BOOKER_PASSWORD }}"
+         URL="${{ secrets.RESTFUL_BOOKER_URL }}"
+         USERNAME="${{ secrets.RESTFUL_BOOKER_USERNAME }}"
+         PASSWORD="${{ secrets.RESTFUL_BOOKER_PASSWORD }}"
          else
          URL="${{ secrets.STAGE_RESTFUL_BOOKER_URL }}"
          USERNAME="${{ secrets.STAGE_RESTFUL_BOOKER_USERNAME }}"
