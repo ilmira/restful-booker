@@ -1,6 +1,6 @@
 from typing import Optional
-
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
+import pytest
 
 
 class BookingDates(BaseModel):
@@ -20,6 +20,7 @@ class Booking(BaseModel):
 class BookingModelResponse(BaseModel):
     bookingid: int
     booking: Booking
+
 
 class GetBookings(BaseModel):
     bookingid: int

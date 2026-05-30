@@ -36,7 +36,6 @@ jobs:
          RESTFUL_BOOKER_USERNAME=$USERNAME
          RESTFUL_BOOKER_PASSWORD=$PASSWORD
          EOF
-         cp ".env.$ENV_NAME" .env
       - name: Run tests (only tests container)
         run: docker compose run --rm restful-booker
         continue-on-error: true

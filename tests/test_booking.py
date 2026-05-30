@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import allure
 import pytest
 from faker import Faker
@@ -143,10 +145,17 @@ class TestBooking:
     def test_get_bookings_by_checkin(self, env_config):
         with allure.step('Получение списка всех бронирований по дате заезда'):
             my_checkin = self.fake.date()
+            checkin_date = datetime.strptime(my_checkin, '%Y-%m-%d')
+            checkout_date = checkin_date + timedelta(days=1)
+            my_checkout = checkout_date.strftime('%Y-%m-%d')
+
             body = BodyBooking.make_fake_body('full')
             body['bookingdates']['checkin'] = my_checkin
+            body['bookingdates']['checkout'] = my_checkout
+
             CreateBooking(env_config).create_booking(body)
             response_checkin = GetBooking(env_config).get_bookings_by_checkin(my_checkin)
+
         for bookingid in response_checkin.json():
             validated_id = GetBookings.model_validate(bookingid)
             response = GetBooking(env_config).get_booking_by_id(validated_id.bookingid)
