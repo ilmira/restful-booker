@@ -9,7 +9,7 @@ class BookingDates(BaseModel):
 
 
 class Booking(BaseModel):
-    firstname: str
+    firstname: Optional[str] = None
     lastname: str
     totalprice: int
     depositpaid: bool
