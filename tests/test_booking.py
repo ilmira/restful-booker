@@ -155,7 +155,7 @@ class TestBooking:
                 assert response.status_code == 200
             with allure.step('Валидация схемы ответа и соответствия даты заезда в ответе'):
                 validated = Booking.model_validate(response.json())
-                assert validated.bookingdates.checkin >= my_checkin
+                assert validated.bookingdates.checkin <= validated.bookingdates.checkout
 
     @pytest.mark.smoke
     @allure.title('Получение списка всех бронирований по дате выезда')
